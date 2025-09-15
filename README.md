@@ -36,7 +36,7 @@ int main(int argc, char **argv)
     {
         doomgeneric_Tick();
     }
-    
+
     return 0;
 }
 ```
@@ -65,3 +65,6 @@ emscripten port is based on SDL port, so it supports sound and music! For music,
 
 ## SDL
 ![SDL](screenshots/sdl.png)
+
+## reMarkable Paper Pro
+![SDL](screenshots/remarkable-paper-pro.png)
