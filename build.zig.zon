@@ -1,0 +1,13 @@
+.{
+    .name = .doomgeneric_rmpp,
+    .version = "0.0.0",
+    .fingerprint = 0x1a03409ac88a5f66, // Changing this has security and trust implications.
+    .minimum_zig_version = "0.15.1",
+    .dependencies = .{
+        .zqtfb = .{
+            .url = "git+https://github.com/0xdeb7ef/zqtfb.git#b41822fff257cb918212b7cd6a4aa5b3533d258f",
+            .hash = "zqtfb-0.0.0-mP8mal-XXQBh2O1AAWFAcFNdBjSepWKrVC8-MNaSLx1V",
+        },
+    },
+    .paths = .{""},
+}
