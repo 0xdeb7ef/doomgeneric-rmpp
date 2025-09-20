@@ -8,6 +8,10 @@
             .url = "git+https://github.com/0xdeb7ef/zqtfb.git#b41822fff257cb918212b7cd6a4aa5b3533d258f",
             .hash = "zqtfb-0.0.0-mP8mal-XXQBh2O1AAWFAcFNdBjSepWKrVC8-MNaSLx1V",
         },
+        .doomgeneric = .{
+            .url = "git+https://github.com/ozkl/doomgeneric#fc601639494e089702a1ada082eb51aaafc03722",
+            .hash = "N-V-__8AAOssRADqeOqsTdnvaf9agKoJDw-V5sZBV17d7ITV",
+        },
     },
     .paths = .{""},
 }

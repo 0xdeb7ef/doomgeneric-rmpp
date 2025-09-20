@@ -5,7 +5,9 @@ pub fn build(b: *std.Build) void {
     const optimize = b.standardOptimizeOption(.{});
 
     const zqtfb = b.dependency("zqtfb", .{});
-    const mod = zqtfb.module("zqtfb");
+    const zqtfb_mod = zqtfb.module("zqtfb");
+
+    const doomgeneric = b.dependency("doomgeneric", .{});
 
     const exe = b.addExecutable(.{
         .name = "doomgeneric",
@@ -15,7 +17,7 @@ pub fn build(b: *std.Build) void {
             .optimize = optimize,
             .link_libc = true,
             .imports = &.{
-                .{ .name = "zqtfb", .module = mod },
+                .{ .name = "zqtfb", .module = zqtfb_mod },
             },
         }),
     });
@@ -106,10 +108,10 @@ pub fn build(b: *std.Build) void {
         "z_zone.c",
     };
 
-    exe.root_module.addIncludePath(b.path("doomgeneric"));
+    exe.root_module.addIncludePath(doomgeneric.path("doomgeneric"));
     exe.root_module.addCSourceFiles(.{
         .files = &c_sources,
-        .root = b.path("doomgeneric"),
+        .root = doomgeneric.path("doomgeneric"),
         .flags = &.{"-fno-sanitize=all"}, //disable ubsan
     });
 
