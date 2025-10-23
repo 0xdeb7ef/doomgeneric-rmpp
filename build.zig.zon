@@ -5,8 +5,8 @@
     .minimum_zig_version = "0.15.1",
     .dependencies = .{
         .zqtfb = .{
-            .url = "git+https://github.com/0xdeb7ef/zqtfb.git#b41822fff257cb918212b7cd6a4aa5b3533d258f",
-            .hash = "zqtfb-0.0.0-mP8mal-XXQBh2O1AAWFAcFNdBjSepWKrVC8-MNaSLx1V",
+            .url = "git+https://github.com/0xdeb7ef/zqtfb.git#8fa4d31ba14b7bd28410fb297b6082a6ae32a7e9",
+            .hash = "zqtfb-0.0.0-mP8mapSXXQCZyvqs8EKZLx3iXMnYMeuB7Io4rdiYLhYq",
         },
         .doomgeneric = .{
             .url = "git+https://github.com/ozkl/doomgeneric#fc601639494e089702a1ada082eb51aaafc03722",

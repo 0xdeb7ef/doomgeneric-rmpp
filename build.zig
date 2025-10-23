@@ -1,8 +1,22 @@
 const std = @import("std");
 
 pub fn build(b: *std.Build) void {
-    const target = b.standardTargetOptions(.{});
     const optimize = b.standardOptimizeOption(.{});
+
+    var cpu_features: std.Target.Cpu.Feature.Set = .empty;
+    cpu_features.addFeature(@intFromEnum(std.Target.aarch64.Feature.aes));
+    cpu_features.addFeature(@intFromEnum(std.Target.aarch64.Feature.crc));
+    cpu_features.addFeature(@intFromEnum(std.Target.aarch64.Feature.fp_armv8));
+    cpu_features.addFeature(@intFromEnum(std.Target.aarch64.Feature.neon));
+    cpu_features.addFeature(@intFromEnum(std.Target.aarch64.Feature.sha2));
+
+    const target = b.resolveTargetQuery(.{
+        .cpu_arch = .aarch64,
+        .cpu_model = .{ .explicit = &std.Target.aarch64.cpu.cortex_a53 },
+        .cpu_features_add = cpu_features,
+        .os_tag = .linux,
+        .abi = .gnu,
+    });
 
     const zqtfb = b.dependency("zqtfb", .{});
     const zqtfb_mod = zqtfb.module("zqtfb");
@@ -18,6 +32,10 @@ pub fn build(b: *std.Build) void {
             .link_libc = true,
             .imports = &.{
                 .{ .name = "zqtfb", .module = zqtfb_mod },
+            },
+            .strip = switch (optimize) {
+                .ReleaseFast, .ReleaseSmall => true,
+                else => null,
             },
         }),
     });
