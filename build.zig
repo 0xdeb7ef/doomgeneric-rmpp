@@ -3,7 +3,7 @@ const std = @import("std");
 pub fn build(b: *std.Build) void {
     const optimize = b.standardOptimizeOption(.{});
 
-    var cpu_features: std.Target.Cpu.Feature.Set = .empty;
+    var cpu_features: std.Target.Cpu.Feature.Set = std.Target.aarch64.cpu.cortex_a53.features;
     cpu_features.addFeature(@intFromEnum(std.Target.aarch64.Feature.aes));
     cpu_features.addFeature(@intFromEnum(std.Target.aarch64.Feature.crc));
     cpu_features.addFeature(@intFromEnum(std.Target.aarch64.Feature.fp_armv8));
