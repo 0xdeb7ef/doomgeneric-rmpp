@@ -6,14 +6,13 @@ var client: zqtfb.Client = undefined;
 const width = 640;
 const height = 400;
 var start_time: i64 = undefined;
-var last_tick: i64 = 0;
 var bw: bool = true;
 
 const log = std.log.scoped(.doomgeneric_rmpp);
 
-fn pollThread(c: *zqtfb.Client) void {
+fn pollThread() void {
     while (true) {
-        const s = c.pollServerPacket() catch {
+        const s = client.pollServerPacket() catch {
             continue;
         };
 
@@ -21,13 +20,13 @@ fn pollThread(c: *zqtfb.Client) void {
             switch (s.message.input.type) {
                 .touch_release => {
                     if (bw) {
-                        c.setRefreshMode(.ufast) catch |err| {
+                        client.setRefreshMode(.ufast) catch |err| {
                             log.warn("Unable to set ufast refresh mode: {}", .{err});
                             continue;
                         };
                         bw = false;
                     } else {
-                        c.setRefreshMode(.animate) catch |err| {
+                        client.setRefreshMode(.animate) catch |err| {
                             log.warn("Unable to set animate refresh mode: {}", .{err});
                             continue;
                         };
@@ -35,7 +34,7 @@ fn pollThread(c: *zqtfb.Client) void {
                     }
                 },
                 .pen_release => {
-                    c.deinit();
+                    client.deinit();
                     std.posix.exit(0);
                 },
                 else => {},
@@ -70,9 +69,7 @@ export fn DG_Init() callconv(.c) void {
     client = zqtfb.Client.init(
         fb,
         .rMPP_rgba8888,
-        // .{ .width = width, .height = height },
         .{ .width = height, .height = width },
-        // null,
         true,
     ) catch |err| {
         log.err("Unable to create qtfb client: {}", .{err});
@@ -89,7 +86,7 @@ export fn DG_Init() callconv(.c) void {
         log.warn("Full screen update failed, continuing: {}", .{err});
     };
 
-    const t = std.Thread.spawn(.{}, pollThread, .{&client}) catch |err| {
+    const t = std.Thread.spawn(.{}, pollThread, .{}) catch |err| {
         log.err("Unable to spawn poll thread: {}", .{err});
         std.posix.exit(4);
     };
@@ -115,18 +112,12 @@ export fn DG_DrawFrame() callconv(.c) void {
     const src = @src();
     log.debug("{s}: {s} {d}:{d}", .{ src.file, src.fn_name, src.line, src.column });
 
-    // const tick = std.time.milliTimestamp();
-    // const diff = tick - last_tick;
     for (0..height) |h| {
         for (0..width) |w| {
             // ScreenBuffer: BGRA (or possibly ARGB, just flipped)
             // rMPP:         RGBA
             const i = client.getPixel(@intCast(height - 1 - h), @intCast(w));
             const p: [4]u8 = @bitCast(doomgeneric.DG_ScreenBuffer[h * width + w]);
-            // client.display[(i * 4)] = p[2]; // R
-            // client.display[(i * 4) + 1] = p[1]; // G
-            // client.display[(i * 4) + 2] = p[0]; // B
-            // client.display[(i * 4) + 3] = 255; // A
             client.display[i] = p[2]; // R
             client.display[i + 1] = p[1]; // G
             client.display[i + 2] = p[0]; // B
@@ -136,13 +127,9 @@ export fn DG_DrawFrame() callconv(.c) void {
 
     log.debug("Copied DG_ScreenBuffer to client.shm", .{});
 
-    // if (diff > std.time.ms_per_s) {
     client.fullUpdate() catch |err| {
         log.warn("Full screen update failed, continuing: {}", .{err});
     };
-
-    // last_tick = tick;
-    // }
 }
 
 export fn DG_SleepMs(ms: u32) callconv(.c) void {
