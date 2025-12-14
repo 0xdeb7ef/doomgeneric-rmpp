@@ -88,6 +88,7 @@ export fn DG_Init() callconv(.c) void {
 
     const t = std.Thread.spawn(.{}, pollThread, .{}) catch |err| {
         log.err("Unable to spawn poll thread: {}", .{err});
+        client.deinit();
         std.posix.exit(4);
     };
     t.detach();
